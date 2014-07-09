@@ -10,6 +10,9 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+from datetime import timedelta
+import djcelery
+
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 
@@ -37,6 +40,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'djcelery',
     'watcher',
 )
 
@@ -84,3 +88,8 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 BROKER_URL = 'redis://localhost:6379/0'
+
+API_TOKEN = "61b587dd68b6e7214438ad6397a647e7cba98eee"
+
+CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
+djcelery.setup_loader()

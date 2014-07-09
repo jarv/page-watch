@@ -3,11 +3,42 @@ from urlparse import urlparse
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from tasks import add
+from tasks import check_github_url
+from djcelery.models import PeriodicTask, IntervalSchedule
+from django.contrib.syndication.views import Feed
+from django.core.urlresolvers import reverse
+from django.contrib.syndication.views import FeedDoesNotExist
+from django.shortcuts import get_object_or_404
 
-class CheckUrl(APIView):
+from watcher.models import WatcherGithub, WatcherGithubHistory
+
+class GetGithubChanges(Feed):
+
+    def get_object(self, request):
+        url = request.DATA.get('url', None)
+        if not url:
+            return Response()
+        url_parsed = urlparse(url)
+        if not url_parsed.netloc.lower().startswith('github'):
+            return Response()
+
+        return get_object_or_404(WatcherGithub, location=url_parsed.geturl())
+
+    def title(self, obj):
+        return "Changes for {}".format(obj.location)
+
+    def link(self, obj):
+        return obj.get_absolute_url()
+
+    def description(self, obj):
+        return "Changes for {}".format(obj.locatino)
+
+    def items(self, obj):
+        return WatcherGithubHistory.objects.filter(watchergithub=obj).order_by('-created')[:30]
+
+class CheckGithubUrl(APIView):
     """
-    Checks a URL
+    Checks a github URL
     """
 
     def get(self, request):
@@ -18,55 +49,21 @@ class CheckUrl(APIView):
         if not url:
             return Response()
         url_parsed = urlparse(url)
-        if not url_parsed.path.lower().startswith('github'):
+        if not url_parsed.netloc.lower().startswith('github'):
             return Response()
+        interval, created = IntervalSchedule.objects.get_or_create(every=15, period='minutes')
+        if created:
+            interval.save()
+        schedule, created = PeriodicTask.objects.get_or_create(
+            name=url,
+            interval=interval,
+            task=u'watcher.tasks.check_github_url',
+            args=(url),
+        )
+        if created:
+            schedule.save()
 
-        res = check_url.delay("https://{}".format(url_parsed.path))
         return Response()
 
 
-#class WebsiteList(APIView):
-#    """
-#    List all websites
-#    """
-#
-#    def get(self, request, format=None):
-#        add.delay(4, 4)
-#        websites = Website.objects.all()
-#        serializer = WebsiteSerializer(websites, many=True)
-#        return Response(serializer.data)
-#
-#    def post(self, request, format=None):
-#        serializer = WebsiteSerializer(data=request.DATA)
-#        if serializer.is_valid():
-#            serializer.save()
-#            return Response(serializer.data, status=status.HTTP_201_CREATED)
-#        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-#
-#class WebsiteDetail(APIView):
-#    """
-#    Retrieve, update or delete a website instance
-#    """
-#    def get_object(self, pk):
-#        try:
-#            return Website.objects.get(pk=pk)
-#        except Website.DoesNotExist:
-#            raise Http404
-#
-#    def get(self, request, pk, format=None):
-#        website = self.get_object(pk)
-#        serializer = WebsiteSerializer(website)
-#        return Response(serializer.data)
-#
-#    def put(self, request, pk, format=None):
-#        website = self.get_object(pk)
-#        serializer = WebsiteSerializer(website, data=request.DATA)
-#        if serializer.is_valid():
-#            serializer.save()
-#            return Response(serializer.data)
-#        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-#
-#    def delete(self, request, pk, format=None):
-#        website = self.get_object(pk)
-#        website.delete()
-#        return Response(status=status.HTTP_204_NO_CONTENT)
+
