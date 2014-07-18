@@ -1,16 +1,24 @@
 from celery import Celery
 import requests
 
-from watcher.models import WatcherGithub,
+from watcher.models import WatcherGithub, WatcherGithubHistory
 from urlparse import urlparse
 from django.conf import settings
 from os import path
 from pprint import pprint
+from djcelery.models import PeriodicTask, IntervalSchedule
 app = Celery('tasks', backend='redis://localhost', broker='redis://localhost')
 
-@app.task
-def add(x,y):
-    return sum(x,y)
+def _watcher_error(url, reason):
+    watcher, created = WatcherGithub.objects.get_or_create(location=url)
+    watcher.status = WatcherGithub.STATUS.errored
+    watcher.last_error = reason
+    watcher.save()
+
+    task = PeriodicTask.objects.get(name=url)
+    task.enabled = False
+    task.save()
+
 
 @app.task
 def check_github_url(url):
@@ -24,14 +32,24 @@ def check_github_url(url):
     # we get a 200 for the url
 
     response = requests.head(url_parsed.geturl())
-    if not response.ok or response.headers.get('server') != 'GitHub.com':
-        watcher.status = WatcherGithub.STATUS.errored
-        watcher.save()
-        return 'errored'
+    if not response.ok:
+        reason = "bad response from url: {} reason: {}".format(
+            url_parsed.geturl(),
+            response.reason)
+        _watcher_error(url, reason)
+        return
+
+    if not response.headers.get('server') != 'GitHub.com':
+        reason = "URL {} is not a github url: {}".format(
+            url_parsed.geturl(),
+            response.headers.get('server'))
+        _watcher_error(url, reason)
+        return
 
     url_parts = url_parsed.path.split('/')
     if url_parts[3] not in ['tree', 'blob'] or len(url_parts) < 5:
         watcher.status = WatcherGithub.STATUS.errored
+        watcher.last_error = 'url parse failed: {}'.format(url_parts)
         watcher.save()
         return 'errored'
 
@@ -56,7 +74,11 @@ def check_github_url(url):
             },
             params=params
         )
-    watcher.current_sha = r.json()[0]['sha']
+    sha = r.json()[0]['sha']
+    watcher_history, created = WatcherGithubHistory.objects.get_or_create(
+        watchergithub=watcher,
+        sha=sha,
+    )
+    watcher_history.save()
     watcher.status = WatcherGithub.STATUS.processed
     watcher.save()
-

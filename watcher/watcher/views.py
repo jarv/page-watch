@@ -9,6 +9,7 @@ from django.contrib.syndication.views import Feed
 from django.core.urlresolvers import reverse
 from django.contrib.syndication.views import FeedDoesNotExist
 from django.shortcuts import get_object_or_404
+import json
 
 from watcher.models import WatcherGithub, WatcherGithubHistory
 
@@ -49,16 +50,20 @@ class CheckGithubUrl(APIView):
         if not url:
             return Response()
         url_parsed = urlparse(url)
+        url = url_parsed.geturl()
+
         if not url_parsed.netloc.lower().startswith('github'):
             return Response()
-        interval, created = IntervalSchedule.objects.get_or_create(every=15, period='minutes')
+
+        check_github_url.delay(url)
+        interval, created = IntervalSchedule.objects.get_or_create(every=15, period='seconds')
         if created:
             interval.save()
         schedule, created = PeriodicTask.objects.get_or_create(
             name=url,
             interval=interval,
             task=u'watcher.tasks.check_github_url',
-            args=(url),
+            args=json.dumps([url]),
         )
         if created:
             schedule.save()
