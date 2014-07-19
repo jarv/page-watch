@@ -7,6 +7,7 @@ argparse==1.2.1
 backports.ssl-match-hostname==3.4.0.2
 billiard==3.3.0.17
 celery==3.1.12
+django-celery==3.1.10
 django-filter==0.7
 django-model-utils==2.0.3
 djangorestframework==2.3.14
@@ -15,6 +16,7 @@ ipython==2.1.0
 kombu==3.0.19
 pytz==2014.4
 redis==2.10.1
+requests==2.3.0
 sh==1.09
 tornado==3.2.2
 wsgiref==0.1.2

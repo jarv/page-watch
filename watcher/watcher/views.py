@@ -1,4 +1,5 @@
 from django.http import Http404
+from django.conf import settings
 from urlparse import urlparse
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -21,7 +22,7 @@ class GetGithubChanges(Feed):
             return Response()
         url_parsed = urlparse(url)
         if not url_parsed.netloc.lower().startswith('github'):
-            return Response()
+            return Response({'error': True, 'reason': 'You can only check a github url'})
 
         return get_object_or_404(WatcherGithub, location=url_parsed.geturl())
 
@@ -48,27 +49,25 @@ class CheckGithubUrl(APIView):
     def post(self, request):
         url = request.DATA.get('url', None)
         if not url:
-            return Response()
-        url_parsed = urlparse(url)
-        url = url_parsed.geturl()
+            return Response({
+                'error': True,
+                'reason': 'You must pass in a url'})
 
-        if not url_parsed.netloc.lower().startswith('github'):
-            return Response()
+        url_parsed = urlparse(url)
+
+        if url_parsed.scheme not in ['http', 'https']:
+            url_parsed = urlparse('https://' + url_parsed.netloc +
+                url_parsed.path)
+
+        if not 'github' in url_parsed.netloc.lower():
+            return Response({
+                'error': True,
+                'reason': 'You can only check a github url'})
+
+        # strip everything except the path and
+        # set the proto to https
+        url = 'https://github.com' + url_parsed.path
 
         check_github_url.delay(url)
-        interval, created = IntervalSchedule.objects.get_or_create(every=15, period='seconds')
-        if created:
-            interval.save()
-        schedule, created = PeriodicTask.objects.get_or_create(
-            name=url,
-            interval=interval,
-            task=u'watcher.tasks.check_github_url',
-            args=json.dumps([url]),
-        )
-        if created:
-            schedule.save()
 
         return Response()
-
-
-
