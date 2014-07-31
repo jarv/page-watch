@@ -28,33 +28,41 @@ $serif: 'Lusitana', serif;
     margin-bottom: 2.5em;
   }
 
-  .file-monitor {
-    box-shadow: 0 0 15px rgba(0,0,0,0.2);
-    padding: 20px;
-    background-color: white;
-    .rounded-border {
-      border-radius: 4px;
-    }
-    input[type="text"] {
-      box-sizing: border-box;
-      width: 100%;
-      padding: 15px;
-      border: 1px solid #b5c6d2;
-      font-size: 1.2em;
-    }
-  }
   .hero-inner {
     @include outer-container;
     @include clearfix;
+    .rounded-border {
+      border-radius: 4px;
+    }
     padding: 3em;
     margin: auto;
     text-align: center;
     color: $hero-color;
-
-    button {
-      @include button(simple, $base-body-color);
-      font-size: $base-font-size;
-      outline: none;
+    .file-monitor {
+      .url-wrapper {
+        position: relative;
+        input[type="text"] {
+          box-sizing: border-box;
+          width: 100%;
+          padding: 15px;
+          border: 1px solid #b5c6d2;
+          font-size: 1.2em;
+        }
+        button {
+          @include button(simple, white);
+          font-size: $base-font-size;
+          font-weight: 40px;
+          position: absolute;
+          top: 5px;
+          right: 5px;
+          height: 43px;
+          width: 100px;
+          text-align: center;
+        }
+      }
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      padding: 20px;
+      background-color: white;
     }
 
     .hero-copy {

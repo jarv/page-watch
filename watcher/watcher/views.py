@@ -13,27 +13,67 @@ from django.shortcuts import get_object_or_404
 import json
 
 from watcher.models import WatcherGithub, WatcherGithubHistory
+from .util import url_github_parse, PathParseFail
 
 class GetGithubChanges(Feed):
-
-    def get_object(self, request):
-        url = request.DATA.get('url', None)
-        if not url:
-            return Response()
-        url_parsed = urlparse(url)
-        if not url_parsed.netloc.lower().startswith('github'):
-            return Response({'error': True, 'reason': 'You can only check a github url'})
-
-        return get_object_or_404(WatcherGithub, location=url_parsed.geturl())
+    """
+    Commits since last change
+    """
+    def get_object(self, request, gh_path):
+        try:
+            user, repo, branch, path = gh_parts_from_path(gh_path)
+        except PathParseFail as e:
+            raise
+        return get_object_or_404(WatcherGithub, gh_path=gh_path)
 
     def title(self, obj):
-        return "Changes for {}".format(obj.location)
+        return "Github changes for {}".format(obj.location)
 
     def link(self, obj):
         return obj.get_absolute_url()
 
     def description(self, obj):
-        return "Changes for {}".format(obj.locatino)
+        return "Periodically watches a single github location for changes"
+
+    def item_description(self, obj):
+        if obj.commits == '':
+            commit = json.loads(obj.commit)
+            rss_entry = """Last commit seen is for {location} is <a href="{html_url}">{sha}</a> - <i>{commit_msg}</i>""".format(
+                    location=obj.watchergithub.location,
+                    html_url=commit['html_url'],
+                    commit_msg=commit['commit']['message'],
+                    sha=commit['sha'][:8])
+            return rss_entry
+        else:
+            diff = obj.diff
+            commits = json.loads(obj.commits)
+            rss_entry = """
+            Changes detected for {location} - <a href="{diff_link}">diff</a>
+            <ul>
+            """
+
+            for commit in commits:
+                rss_entry += """
+                <li>
+                    <img alt="{login}" src="{avatar_url}" /> - <a href="{author_html_url}">{login}</a> - <a href="{html_url}">{sha}</a> - <i>{commit_msg}</i>
+                </li>
+                """.format(
+                    login=commit['author']['login'],
+                    avatar_url=commit['author']['avatar_url'],
+                    author_html_url=commit['author']['html_url'],
+                    html_url=commit['html_url'],
+                    sha=commit['sha'][:8],
+                    commit_msg=commit['commit']['message'])
+
+            rss_entry += """
+            </ul>
+            """
+            return rss_entry
+    def item_title(self, obj):
+        commit = json.loads(obj.commit)
+        return """Changes made by user {login} - {commit_msg}""".format(
+            login=commit['author']['login'],
+            commit_msg=commit['commit']['message'])
 
     def items(self, obj):
         return WatcherGithubHistory.objects.filter(watchergithub=obj).order_by('-created')[:30]
@@ -44,6 +84,10 @@ class CheckGithubUrl(APIView):
     """
 
     def get(self, request):
+        #url = request.GET.get('url', None)
+        #url_parsed = urlparse(url)
+        #user, repo, branch, file_path = gh_parts_from_path(url_parsed.path)
+
         return Response()
 
     def post(self, request):
@@ -52,22 +96,23 @@ class CheckGithubUrl(APIView):
             return Response({
                 'error': True,
                 'reason': 'You must pass in a url'})
-
-        url_parsed = urlparse(url)
-
-        if url_parsed.scheme not in ['http', 'https']:
-            url_parsed = urlparse('https://' + url_parsed.netloc +
-                url_parsed.path)
-
-        if not 'github' in url_parsed.netloc.lower():
+        try:
+            user, repo, branch, file_path, gh_path = url_github_parse(url)
+        except PathParseFail as e:
             return Response({
                 'error': True,
-                'reason': 'You can only check a github url'})
+                'reason': 'Unable to check URL'})
 
-        # strip everything except the path and
-        # set the proto to https
-        url = 'https://github.com' + url_parsed.path
-
-        check_github_url.delay(url)
-
-        return Response()
+        watcher, created = WatcherGithub.objects.get_or_create(gh_path=gh_path)
+        if watcher.status != WatcherGithub.STATUS.processed:
+            watcher.status = WatcherGithub.STATUS.initialized
+            watcher.location = url
+            watcher.user = user
+            watcher.repo = repo
+            watcher.branch = branch
+            watcher.file_path = file_path
+            watcher.save()
+            check_github_url.delay(gh_path=gh_path)
+        return Response({
+            'path': gh_path,
+            'status': 'checking'})

@@ -10,10 +10,15 @@ https://github.com/path/to/invalid/file
 http://github.com/path/to/invalid/file
 https://google.com
 http://google.com
+https://github.com/jarv/dotfiles/blob/master/README.md
+https://github.com/jarv/test-repo/blob/master/README.md
+https://github.com/jarv/test-repo/tree/master/foo
+https://github.com/jarv/test-repo/blob/master/foo/1.txt
 "
 
 for url in $urls; do
+    echo 'curl --data "url=$url" http://localhost:8000/g'
+    read -p pause
     curl --data "url=$url" http://localhost:8000/g
-    sleep .1
 done
 

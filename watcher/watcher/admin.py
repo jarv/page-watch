@@ -2,10 +2,10 @@ from django.contrib import admin
 from watcher.models import WatcherGithub, WatcherGithubHistory
 
 class WatcherGithubAdmin(admin.ModelAdmin):
-    list_display = ('location', 'status', 'last_error')
+    list_display = ('location', 'status', 'last_error', 'ratelimit_remaining' )
 
 class WatcherGithubHistoryAdmin(admin.ModelAdmin):
-    list_display = ('location', 'sha')
+    list_display = ('location', 'sha', 'created')
     def location(self, obj):
         return obj.watchergithub.location
 
