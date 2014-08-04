@@ -1,0 +1,3 @@
+CREATE USER watcher WITH PASSWORD 'password';
+CREATE DATABASE watcher;
+GRANT ALL PRIVILEGES ON DATABASE watcher to watcher;
