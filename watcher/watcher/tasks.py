@@ -58,7 +58,7 @@ def check_github_url(gh_path):
         if r.status_code != 200:
             reason = "bad response from url: {} status_code: {} reason: {}".format(
                 api_url,
-                r.staus_code,
+                r.status_code,
                 r.reason)
             _watcher_error(gh_path, reason)
             return

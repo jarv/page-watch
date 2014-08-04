@@ -10,6 +10,8 @@ from django.contrib.syndication.views import Feed
 from django.core.urlresolvers import reverse
 from django.contrib.syndication.views import FeedDoesNotExist
 from django.shortcuts import get_object_or_404
+from django.utils.decorators import method_decorator
+
 import json
 
 from watcher.models import WatcherGithub, WatcherGithubHistory
@@ -76,7 +78,7 @@ class GetGithubChanges(Feed):
             commit_msg=commit['commit']['message'])
 
     def items(self, obj):
-        return WatcherGithubHistory.objects.filter(watchergithub=obj).order_by('-created')[:30]
+        return WatcherGithubHistory.objects.filter(watchergithub=obj).order_by('-id')[:30]
 
 class CheckGithubUrl(APIView):
     """
@@ -84,27 +86,51 @@ class CheckGithubUrl(APIView):
     """
 
     def get(self, request):
-        #url = request.GET.get('url', None)
-        #url_parsed = urlparse(url)
-        #user, repo, branch, file_path = gh_parts_from_path(url_parsed.path)
-
-        return Response()
-
-    def post(self, request):
-        url = request.DATA.get('url', None)
+        url = request.GET.get('url', None)
         if not url:
             return Response({
-                'error': True,
+                'status': 'errored',
                 'reason': 'You must pass in a url'})
         try:
             user, repo, branch, file_path, gh_path = url_github_parse(url)
         except PathParseFail as e:
             return Response({
-                'error': True,
+                'status': 'errored',
+                'reason': 'Unable to check URL'})
+            raise
+        try:
+            watcher = WatcherGithub.objects.get(gh_path=gh_path)
+        except WatcherGithub.DoesNotExist:
+            return Response(dict(status='DoesNotExist'))
+
+        if watcher.status in [WatcherGithub.STATUS.processing, WatcherGithub.STATUS.initialized]:
+            return Response(dict(
+                path=gh_path,
+                status='processing'))
+        elif watcher.status == 'processed':
+            return Response(_get_watcher_with_history(watcher))
+
+        else:
+            return Response(dict(
+                status='errored',
+                reason='Unable to check URL'))
+
+    def post(self, request):
+        print "got post"
+        url = request.DATA.get('url', None)
+        if not url:
+            return Response({
+                'status': 'errored',
+                'reason': 'You must pass in a url'})
+        try:
+            user, repo, branch, file_path, gh_path = url_github_parse(url)
+        except PathParseFail as e:
+            return Response({
+                'status': 'errored',
                 'reason': 'Unable to check URL'})
 
         watcher, created = WatcherGithub.objects.get_or_create(gh_path=gh_path)
-        if watcher.status != WatcherGithub.STATUS.processed:
+        if created or watcher.status != WatcherGithub.STATUS.processed:
             watcher.status = WatcherGithub.STATUS.initialized
             watcher.location = url
             watcher.user = user
@@ -113,6 +139,28 @@ class CheckGithubUrl(APIView):
             watcher.file_path = file_path
             watcher.save()
             check_github_url.delay(gh_path=gh_path)
-        return Response({
-            'path': gh_path,
-            'status': 'checking'})
+            resp = dict(
+                path=gh_path,
+                status='processing')
+            return Response(resp)
+        else:
+            return Response(_get_watcher_with_history(watcher))
+
+def _get_watcher_with_history(watcher):
+    watcher_history = WatcherGithubHistory.objects.filter(watchergithub=watcher).order_by('-id')[0]
+    commit = json.loads(watcher_history.commit)
+    resp = dict(
+        path=watcher.gh_path,
+        location=watcher.location,
+        user=watcher.user,
+        repo=watcher.repo,
+        branch=watcher.branch,
+        commit_avatar_url=commit['committer']['avatar_url'],
+        html_url=commit['html_url'],
+        commit_msg=commit['commit']['message'],
+        sha=commit['sha'][:8],
+        created=str(watcher_history.created),
+        updated=str(watcher_history.updated),
+        status='processed')
+    return resp
+

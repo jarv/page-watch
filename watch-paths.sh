@@ -17,8 +17,6 @@ https://github.com/jarv/test-repo/blob/master/foo/1.txt
 "
 
 for url in $urls; do
-    echo 'curl --data "url=$url" http://localhost:8000/g'
-    read -p pause
-    curl --data "url=$url" http://localhost:8000/g
+    curl --data "url=$url" http://localhost/g
 done
 

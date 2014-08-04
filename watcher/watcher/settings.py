@@ -87,7 +87,7 @@ USE_TZ = True
 
 
 MAX_ERRORS = 3
-INTERVAL_EVERY = 1
+INTERVAL_EVERY = 15
 INTERVAL_PERIOD = 'minutes'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
@@ -100,5 +100,4 @@ API_TOKEN = "61b587dd68b6e7214438ad6397a647e7cba98eee"
 
 CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
 djcelery.setup_loader()
-
 

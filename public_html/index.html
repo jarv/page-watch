@@ -13,7 +13,7 @@
         <link rel="stylesheet" href="css/normalize.min.css">
         <link rel="stylesheet" href="css/main.css">
         <link rel="stylesheet" href="css/style.css">
-
+        <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
         <script src="js/vendor/modernizr-2.6.2.min.js"></script>
     </head>
     <body>
@@ -22,28 +22,34 @@
         <![endif]-->
         <div class="hero">
           <div class="hero-inner">
-            <a href="" class="hero-logo"><img src="https://raw.githubusercontent.com/thoughtbot/refills/master/source/images/placeholder_logo_1.png
-        " alt=""></a>
             <div class="hero-copy">
               <h1>Monitor a single Github file or directory</h1>
             </div>
-            <div class="file-monitor rounded-border">
-              <form action="#" method="POST" class="rounded-border create-form">
+            <div class="file-monitor rounded-border box-shadow">
+              <form action="#" method="POST" id="watcher-submit" class="rounded-border create-form">
                   <div class="url-wrapper">
                       <button class="rounded-border">Go!</button>
-                      <input type="text" class="rounded-border web-url" placeholder="Enter Website URL, e.g. http://www.google.com" name="website-url" />
+                      <input type="text" class="rounded-border web-url" placeholder="Enter Github URL, e.g. https://github.com/torvalds/linux/blob/master/MAINTAINERS" name="url" />
                   </div>
-                  <div id="preview" class="rounded-border">
-                      <div class="spinner"></div>
-                      <div class="meta">Capturing Initial Snapshot...</div>
-                  </div>
-                  <div class="mail-wrapper">
-                      <label for="not-receptor" class="not-receptor upper">send notifications to</label>
-                      <input type="text" class="rounded-border fld-email" placeholder="me@example.com" name="not-receptor" id="not-receptor" />
-                      <span class="validator"></span>
-                  </div>
-                  <div class="submit-wrapper">
-                      <input class="btn-submit btn-disabled" type="button" value="Start Monitoring!" disabled/>
+                  <div class="watcher-results-wrapper">
+                    <div class="spinner-wrapper">
+                      <div class="spinner-icon"><img src="imgs/spinner.gif" alt="spinner" /></div>
+                      <div class="spinner-message">Fetching information for this github location</div>
+                    </div>
+                    <div class="info-wrapper" class="rounded-border">
+                        <div class="info"></div>
+                    </div>
+                    <div class="notification-wrapper">
+                        <div class="email-rss-wrapper">
+                          <i class="fa fa-rss-square fa-5x rss-icon"></i>
+                          <input type="text" class="rounded-border fld-email" placeholder="me@example.com" name="email-recip" id="email-recip" />
+                          <button class="rounded-border">Send Me<br />Notifications</button>
+                        </div>
+                    </div>
+                    <div class="error-wrapper">
+                      <div class="error-icon"><i class="fa fa-warning fa-5x"></i></div>
+                      <div class="error-message"></span>
+                    </div>
                   </div>
               </form>
             </div>
@@ -54,7 +60,7 @@
         <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.0.min.js"><\/script>')</script>
 
         <script src="js/plugins.js"></script>
-        <script src="js/main.js"></script>
+        <script src="js/file-watcher.js"></script>
 
         <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
         <script>
