@@ -23,13 +23,13 @@
         <div class="hero">
           <div class="hero-inner">
             <div class="hero-copy">
-              <h1>Monitor a single Github file or directory</h1>
+              <h1>Watch a single Github file or directory</h1>
             </div>
             <div class="file-monitor rounded-border box-shadow">
               <form action="#" method="POST" id="watcher-submit" class="rounded-border create-form">
                   <div class="url-wrapper">
-                      <button class="rounded-border">Go!</button>
                       <input type="text" class="rounded-border web-url" placeholder="Enter Github URL, e.g. https://github.com/torvalds/linux/blob/master/MAINTAINERS" name="url" />
+                      <button class="rounded-border">Check</button>
                   </div>
                   <div class="watcher-results-wrapper">
                     <div class="spinner-wrapper">
@@ -60,6 +60,8 @@
         <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.0.min.js"><\/script>')</script>
 
         <script src="js/plugins.js"></script>
+        <script src="js/vendor/underscore-min.js"></script>
+        <script src="js/vendor/backbone-min.js"></script>
         <script src="js/file-watcher.js"></script>
 
         <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->

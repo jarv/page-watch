@@ -3,26 +3,25 @@
 @import 'base/base';
 
 $large-screen:  new-breakpoint(max-width 1200px 12);
-body {
-
+$base-accent-color: black;
+$dark-purple: #00008B;
+$dark-dark-purple: darken($dark-purple, 20);
+$dark-dark-dark-purple: darken($dark-purple, 30);
+$light-light-purple: lighten($dark-purple, 72);
+html, body {
+  height: 100%;
 }
-body  {
-  $hero-background-top: darken($base-accent-color, 25); 
-  $hero-background-bottom: adjust-hue($hero-background-top, -70);
+.hero {
+  $hero-background-top: $dark-purple;
+  $hero-background-bottom: black;
   $hero-color: white;
-  $gradient-angle: 10deg;
   $hero-image: '/imgs/space.png';
   $spinner-color: $blue;
-  // @include background(url($hero-image), linear-gradient($gradient-angle, $hero-background-bottom, $hero-background-top), no-repeat $hero-background-top scroll);
-    
-  background-color:  black;
-  @include background(url($hero-image));
+  // @include linear-gradient($hero-background-bottom, $hero-background-top);
 
-  background-repeat: no-repeat;
-  background-position: top;
-  background-size: cover;
+  background-color: $dark-dark-purple;
   padding-bottom: 4em;
-
+  height: 100%;
   .hero-logo img {
     height: 3em;
     margin-bottom: 2.5em;
@@ -32,7 +31,7 @@ body  {
     @include outer-container;
     @include clearfix;
     .rounded-border {
-      border-radius: 10px;
+      border-radius: 15px;
     }
     padding: 3em;
     margin: auto;
@@ -41,27 +40,33 @@ body  {
     .box-shadow {
       box-shadow: 0 0 15px rgba(0,0,0,0.2);
     }
+    button {
+      font-size: $base-font-size;
+      text-align: center;
+      outline: none;
+    }
 
     .file-monitor {
       @include clearfix;
+      border: 3px solid $dark-dark-dark-purple;
       .url-wrapper {
-        position: relative;
+        @include clearfix;
+        width: 100%;
+        padding-right: 110px;
         input[type="text"] {
           box-sizing: border-box;
           width: 100%;
           padding: 15px;
           border: 1px solid #b5c6d2;
           font-size: 1.2em;
+          float: left;
         }
         button {
-          font-size: $base-font-size;
-          font-weight: 40px;
-          position: absolute;
-          top: 7px;
-          right: 7px;
-          height: 40px;
+          height: 53px;
           width: 100px;
-          text-align: center;
+          float: right;
+          font-size: 16px;
+          margin-right: -110px;
         }
       }
       .error-wrapper {
@@ -163,7 +168,7 @@ body  {
         display: none;
         .info {
           ul {
-            background-color: lighten($light-yellow, 10);
+            background-color: $light-light-purple;
           }
           li.avatar img {
             width: 100px;
