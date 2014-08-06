@@ -1,0 +1,10 @@
+- name: file-watcher
+  hosts: all
+  sudo: True
+  roles:
+    - role: user
+      user_info:
+        - name: jarv
+          type: admin
+          github: true
+    - role: nginx
