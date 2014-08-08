@@ -46,7 +46,7 @@ $(document).ready(() ->
     form_data.append('gh_path', parser.pathname)
 
     $.ajax({
-      url: 'http://localhost/g',
+      url: '/g',
       dataType: 'json',
       data: form_data,
       #data: $('form#watcher-submit').serialize(),
@@ -86,7 +86,7 @@ $(document).ready(() ->
         gh_path: path,
       }
       $.ajax({
-        url: 'http://localhost/g',
+        url: '/g',
         dataType: 'json',
         data: data,
         success: (data) ->
