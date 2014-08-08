@@ -98,13 +98,5 @@ BROKER_URL = 'redis://localhost:6379/0'
 
 API_TOKEN = "61b587dd68b6e7214438ad6397a647e7cba98eee"
 
-CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
-CELERY_TASK_SERIALIZER='json',
-CELERY_ACCEPT_CONTENT=['json'],  # Ignore other content
-CELERY_RESULT_SERIALIZER='json',
-CELERY_TIMEZONE='US/Eastern',
-CELERY_ENABLE_UTC=True,
-
-
 djcelery.setup_loader()
 

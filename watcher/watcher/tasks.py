@@ -13,6 +13,15 @@ import json
 
 app = Celery('tasks', backend='redis://localhost', broker='redis://localhost')
 
+app.conf.update(
+    CELERY_TASK_SERIALIZER='json',
+    CELERY_ACCEPT_CONTENT=['json'],  # Ignore other content
+    CELERY_RESULT_SERIALIZER='json',
+    CELERY_TIMEZONE='US/Eastern',
+    CELERY_ENABLE_UTC=True,
+)
+
+
 @transaction.atomic
 def _watcher_error(gh_path, reason, disable=False):
     watcher, created = WatcherGithub.objects.get_or_create(gh_path=gh_path)
