@@ -21,3 +21,4 @@ sh==1.09
 tornado==3.2.2
 uWSGI==2.0.6
 wsgiref==0.1.2
+psycopg2==2.5.3
