@@ -30,7 +30,7 @@ class GetGithubChanges(Feed):
         return get_object_or_404(WatcherGithub, gh_path=gh_path)
 
     def title(self, obj):
-        return "Github changes for {}".format(obj.location)
+        return "Github updates for {}".format(obj.gh_path[1:])
 
     def link(self, obj):
         return obj.get_absolute_url()
@@ -41,8 +41,8 @@ class GetGithubChanges(Feed):
     def item_description(self, obj):
         if obj.commits == '':
             commit = json.loads(obj.commit)
-            rss_entry = """Last commit seen is for {location} is <a href="{html_url}">{sha}</a> - <i>{commit_msg}</i>""".format(
-                    location=obj.watchergithub.location,
+            rss_entry = """Last commit seen is <a href="{html_url}">{sha}</a> with comment <i>{commit_msg}</i>""".format(
+                    location=obj.watchergithub.gh_path,
                     html_url=commit['html_url'],
                     commit_msg=commit['commit']['message'],
                     sha=commit['sha'][:8])

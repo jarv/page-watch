@@ -32,7 +32,7 @@ class WatcherGithubHistory(models.Model):
     commits = models.TextField(default='')
 
     def get_absolute_url(self):
-        return self.watchergithub.location
+        return self.commit.get('html_url', self.watchergithub.location)
     class Meta:
         unique_together = ('watchergithub', 'sha')
         ordering = ('created',)
