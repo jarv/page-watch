@@ -1,2 +1,7 @@
-coffee -o public_html/js -cw coffee/ &
-sass --watch sass:public_html/css &
+kill -9 $(pgrep coffee)
+kill -9 $(pgrep sass)
+
+coffee -o static/js -cw coffee/ &
+sass --watch sass:static/css &
+cd static/
+python -m SimpleHTTPServer 5555

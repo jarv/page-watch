@@ -1,5 +1,8 @@
 $(document).ready(() ->
-  
+
+  pad = (n) ->
+    return String("0" + n).slice(-2)
+
   hideAll = () ->
     $(".spinner-wrapper").hide()
     $(".info-wrapper").hide()
@@ -25,15 +28,26 @@ $(document).ready(() ->
     $(".error-wrapper").hide()
 
   updateInfo = (data) ->
+    date = new Date(data.updated)
+    hours = date.getHours()
+    minutes = date.getMinutes()
+    seconds = date.getSeconds()
+    year = date.getFullYear()
+    month = date.getMonth()
+    day = date.getDate()
+    formattedTime = year + '-' + pad(month,2) + '-' + pad(day,2) + ' ' + pad(hours,2) + ':' + pad(minutes,2)
     $('.info-wrapper .info').html("""
       <ul class="rounded-border">
         <li class="path"><a href="#{data.location}">#{data.gh_path.substr(1)}</a></li>
-        <li class="updated">last checked on #{data.updated}</li>
+        <li class="updated">last checked on #{formattedTime}</li>
         <li class="avatar"><img src="#{data.commit_avatar_url}" alt="#{data.user}" /></li>
         <li class="commit"><a href="#{data.html_url}">#{data.sha}</a></li>
         <li class="commit-msg">#{data.commit_msg}</li>
       </ul>
       """)
+    $('.email-rss-wrapper .rss-icon').html("""
+      <a href="/f#{data.gh_path}.xml"><i class="fa fa-rss-square fa-5x rss-icon"></i></a>
+    """)
     showInfo()
 
   $("#watcher-submit").submit((e) ->
@@ -57,13 +71,14 @@ $(document).ready(() ->
           app_router.navigate(data.gh_path, { trigger: true })
         else if data.status == 'processed'
           updateInfo(data)
+          window.history.pushState("object or string", "Title", "#" + data.gh_path)
         else if data.status == 'errored'
           $(".error-message").html(data.reason)
           showError()
         undefined
       error: (e) ->
-        console.log('error')
-        console.log(e)
+        $(".error-message").html("Uh oh! we are experiencing server issues, try again later")
+        showError()
       type: 'POST',
       cache: false,
       contentType: false,

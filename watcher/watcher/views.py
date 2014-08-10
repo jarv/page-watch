@@ -11,11 +11,12 @@ from django.core.urlresolvers import reverse
 from django.contrib.syndication.views import FeedDoesNotExist
 from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
-
+from pprint import pprint
+import time
 import json
 
 from watcher.models import WatcherGithub, WatcherGithubHistory
-from .util import path_github_parse, url_github_parse, PathParseFail
+from .util import path_github_parse, PathParseFail
 
 class GetGithubChanges(Feed):
     """
@@ -98,7 +99,7 @@ class CheckGithubUrl(APIView):
         except PathParseFail as e:
             return Response({
                 'status': 'errored',
-                'reason': 'Unable to check URL'})
+                'reason': str(e)})
             raise
         url = "https://github.com{}".format(gh_path)
         try:
@@ -134,7 +135,7 @@ class CheckGithubUrl(APIView):
             print str(e)
             return Response({
                 'status': 'errored',
-                'reason': 'Unable to check URL'})
+                'reason': str(e)})
 
         url = "https://github.com{}".format(gh_path)
 
@@ -158,18 +159,25 @@ class CheckGithubUrl(APIView):
 def _get_watcher_with_history(watcher):
     watcher_history = WatcherGithubHistory.objects.filter(watchergithub=watcher).order_by('-id')[0]
     commit = json.loads(watcher_history.commit)
+    pprint(commit)
+    if 'committer' not in commit or not commit['committer']:
+        committer = {}
+    else:
+        committer = commit['committer']
     resp = dict(
         gh_path=watcher.gh_path,
         location=watcher.location,
         user=watcher.user,
         repo=watcher.repo,
         branch=watcher.branch,
-        commit_avatar_url=commit['committer']['avatar_url'],
-        html_url=commit['html_url'],
-        commit_msg=commit['commit']['message'],
+        commit_avatar_url=committer.get('avatar_url', '/imgs/github-anon.png'),
+        html_url=commit.get('html_url', 'https://github.com'),
+        commit_msg=commit.get('commit', {}).get('message', 'No commit message'),
         sha=commit['sha'][:8],
         created=str(watcher_history.created),
+        #created=time.mktime(watcher_history.created.timetuple()),
         updated=str(watcher_history.updated),
+        #updated=time.mktime(watcher_history.updated.timetuple()),
         status='processed')
     return resp
 
