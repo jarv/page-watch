@@ -85,7 +85,7 @@ USE_L10N = True
 
 USE_TZ = True
 
-
+SITE_BASE = 'http://localhost:8000'
 MAX_ERRORS = 3
 INTERVAL_EVERY = 15
 INTERVAL_PERIOD = 'minutes'

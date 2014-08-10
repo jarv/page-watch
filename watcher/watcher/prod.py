@@ -5,3 +5,4 @@ TEMPLATE_DEBUG = False
 ALLOWED_HOSTS = ['*']
 STATIC_ROOT = '/home/jarv/file-watcher/static/static'
 STATIC_URL = '/static/'
+SITE_BASE = 'http://file-watcher.jarv.org'

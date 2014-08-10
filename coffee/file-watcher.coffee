@@ -45,6 +45,10 @@ $(document).ready(() ->
         <li class="commit-msg">#{data.commit_msg}</li>
       </ul>
       """)
+    feed_url = encodeURIComponent("http://file-watcher.jarv.org/f#{data.gh_path}.xml")
+    $('.email-rss-wrapper .feedly-icon').html("""
+      <a href='http://cloud.feedly.com/#subscription%2Ffeed%2F#{feed_url}' target='blank'><img id='feedlyFollow' src='http://s3.feedly.com/img/follows/feedly-follow-square-flat-green_2x.png' alt='follow us in feedly' width='46' height='46'></a>
+    """)
     $('.email-rss-wrapper .rss-icon').html("""
       <a href="/f#{data.gh_path}.xml"><i class="fa fa-rss-square fa-5x rss-icon"></i></a>
     """)

@@ -101,7 +101,7 @@ html, body {
         @include clearfix;
         display: none;
         position: relative;
-        width: 460px;
+        width: 500px;
         margin: 0px auto;
         height: 60px;
         .rss-icon {
@@ -110,6 +110,12 @@ html, body {
           color: #ff6600;
           font-size: 55px;
         }
+        .feedly-icon {
+          left: 50px;
+          top: 4px;
+          position: absolute; 
+        }
+
         input[type="text"] {
           right: 0px;
           position: absolute; 
@@ -199,6 +205,9 @@ html, body {
       h1 {
         font-size: 1.6em;
         margin-bottom: .5em;
+        a:link {
+          color: white;
+        }
 
         @include media($large-screen) {
           font-size: 1.8em;
