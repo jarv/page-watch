@@ -1,5 +1,5 @@
 from django.db import models
-
+import json
 from model_utils import Choices
 
 class WatcherGithub(models.Model):
@@ -32,7 +32,9 @@ class WatcherGithubHistory(models.Model):
     commits = models.TextField(default='')
 
     def get_absolute_url(self):
-        return self.commit.get('html_url', self.watchergithub.location)
+        commit_info = json.loads(self.commit)
+        return commit_info.get('html_url', self.watchergithub.location)
+
     class Meta:
         unique_together = ('watchergithub', 'sha')
         ordering = ('created',)

@@ -35,6 +35,10 @@ class GetGithubChanges(Feed):
     def link(self, obj):
         return obj.get_absolute_url()
 
+    def item_link(self, obj):
+        return obj.get_absolute_url()
+
+
     def description(self, obj):
         return "Periodically watches a single github location for changes"
 
