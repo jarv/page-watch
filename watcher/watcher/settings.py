@@ -93,10 +93,7 @@ INTERVAL_PERIOD = 'minutes'
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
 STATIC_URL = '/static/'
-
 BROKER_URL = 'redis://localhost:6379/0'
-
 API_TOKEN = "61b587dd68b6e7214438ad6397a647e7cba98eee"
-
 djcelery.setup_loader()
 
