@@ -14,7 +14,7 @@ from django.utils.decorators import method_decorator
 from pprint import pprint
 import time
 import json
-
+from os.path import basename
 from watcher.models import WatcherGithub, WatcherGithubHistory
 from .util import path_github_parse, PathParseFail
 
@@ -30,7 +30,7 @@ class GetGithubChanges(Feed):
         return get_object_or_404(WatcherGithub, gh_path=gh_path)
 
     def title(self, obj):
-        return "Github updates for {}".format(obj.gh_path[1:])
+        return "GH updates for {} ({})".format(basename(obj.gh_path[1:]), obj.repo)
 
     def link(self, obj):
         return obj.get_absolute_url()
