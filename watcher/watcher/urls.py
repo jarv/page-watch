@@ -10,6 +10,7 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^g/?$', views.CheckGithubUrl.as_view()),
+    url(r'^e/?$', views.Notify.as_view()),
     url(r'^f(?P<gh_path>.*).xml$', views.GetGithubChanges()),
 )
 

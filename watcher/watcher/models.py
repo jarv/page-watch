@@ -2,6 +2,11 @@ from django.db import models
 import json
 from model_utils import Choices
 
+class WatcherGithubNotifications(models.Model):
+    email = models.EmailField()
+    def __str__(self):
+        return self.email
+
 class WatcherGithub(models.Model):
     STATUS = Choices('initialized', 'processing', 'processed', 'errored')
     gh_path = models.CharField(max_length=2048, default='', db_index=True)
@@ -17,6 +22,7 @@ class WatcherGithub(models.Model):
     updated = models.DateTimeField(auto_now=True)
     ratelimit_remaining = models.IntegerField(default=0)
     ratelimit = models.IntegerField(default=0)
+    notifications = models.ManyToManyField(WatcherGithubNotifications)
     class Meta:
         ordering = ('created',)
     def get_absolute_url(self):

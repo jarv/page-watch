@@ -11,12 +11,13 @@ from django.core.urlresolvers import reverse
 from django.contrib.syndication.views import FeedDoesNotExist
 from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
-from pprint import pprint
 import time
 import json
 from os.path import basename
-from watcher.models import WatcherGithub, WatcherGithubHistory
+from watcher.models import WatcherGithub, WatcherGithubHistory, WatcherGithubNotifications
 from .util import path_github_parse, PathParseFail
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
 
 class GetGithubChanges(Feed):
     """
@@ -85,6 +86,40 @@ class GetGithubChanges(Feed):
     def items(self, obj):
         return WatcherGithubHistory.objects.filter(watchergithub=obj).order_by('-id')[:30]
 
+class Notify(APIView):
+    """
+    Subscribes a user to a github path check
+    """
+    def post(self, request):
+        gh_path = request.DATA.get('gh_path', None)
+        email = request.DATA.get('email', None)
+
+        if not gh_path or not email:
+            return Response({
+                'status': 'errored',
+                'reason': 'You must pass in a github path and email'})
+        try:
+            validate_email(email)
+        except ValidationError:
+            return Response({
+                    'status': 'errored',
+                    'reason': 'Invalid email'})
+
+        try:
+            user, repo, branch, file_path, gh_path = path_github_parse(gh_path)
+        except PathParseFail as e:
+            return Response({
+                'status': 'errored',
+                'reason': str(e)})
+            raise
+
+        try:
+            watcher = WatcherGithub.objects.get(gh_path=gh_path)
+        except WatcherGithub.DoesNotExist:
+            return Response({
+                    'status': 'errored',
+                    'reason': 'Github path does not exist'})
+
 class CheckGithubUrl(APIView):
     """
     Checks a github URL
@@ -124,15 +159,14 @@ class CheckGithubUrl(APIView):
                 reason='Unable to check URL'))
 
     def post(self, request):
-        print request.DATA
         gh_path = request.DATA.get('gh_path', None)
+        email = request.DATA.get('email', None)
 
 
         if not gh_path:
             return Response({
                 'status': 'errored',
                 'reason': 'You must pass in a gh_path'})
-
         try:
             user, repo, branch, file_path, gh_path = path_github_parse(gh_path)
         except PathParseFail as e:
@@ -142,28 +176,37 @@ class CheckGithubUrl(APIView):
                 'reason': str(e)})
 
         url = "https://github.com{}".format(gh_path)
-
         watcher, created = WatcherGithub.objects.get_or_create(gh_path=gh_path)
-        if created or watcher.status != WatcherGithub.STATUS.processed:
-            watcher.status = WatcherGithub.STATUS.initialized
-            watcher.location = url
-            watcher.user = user
-            watcher.repo = repo
-            watcher.branch = branch
-            watcher.file_path = file_path
+
+        if email:
+            print "Email!! {}".format(email)
+            notification, created = WatcherGithubNotifications.objects.get_or_create(email=email)
+            notification.save()
+            watcher.notifications.add(notification)
             watcher.save()
-            check_github_url.delay(gh_path=gh_path)
-            resp = dict(
-                gh_path=gh_path,
-                status='processing')
-            return Response(resp)
+            return Response({'status': 'processed'})
+
+
         else:
-            return Response(_get_watcher_with_history(watcher))
+            if created or watcher.status != WatcherGithub.STATUS.processed:
+                watcher.status = WatcherGithub.STATUS.initialized
+                watcher.location = url
+                watcher.user = user
+                watcher.repo = repo
+                watcher.branch = branch
+                watcher.file_path = file_path
+                watcher.save()
+                check_github_url.delay(gh_path=gh_path)
+                resp = dict(
+                    gh_path=gh_path,
+                    status='processing')
+                return Response(resp)
+            else:
+                return Response(_get_watcher_with_history(watcher))
 
 def _get_watcher_with_history(watcher):
     watcher_history = WatcherGithubHistory.objects.filter(watchergithub=watcher).order_by('-id')[0]
     commit = json.loads(watcher_history.commit)
-    pprint(commit)
     if 'committer' not in commit or not commit['committer']:
         committer = {}
     else:

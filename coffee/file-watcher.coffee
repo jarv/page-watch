@@ -20,6 +20,7 @@ $(document).ready(() ->
     $(".info-wrapper").hide()
     $(".notification-wrapper").hide()
     $(".error-wrapper").show()
+    $("input.email").val('')
 
   showInfo = () ->
     $(".spinner-wrapper").hide()
@@ -59,6 +60,7 @@ $(document).ready(() ->
     $('.info-wrapper .info').html("")
     form_data = new FormData()
     form_data.append('url', $("input.web-url").val())
+    form_data.append('email', $("input.email").val())
     parser = document.createElement('a')
     parser.href = $("input.web-url").val()
     form_data.append('gh_path', parser.pathname)
@@ -124,7 +126,7 @@ $(document).ready(() ->
         type: 'GET',
       })
     if path
-      console.log("fetching " + path)
+      $("input.web-url").val('https://github.com/' + path)
       process_path()
     undefined
   )
