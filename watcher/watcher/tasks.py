@@ -1,12 +1,8 @@
 from celery import Celery
 import requests
-from requests.exceptions import ConnectionError
 
 from watcher.models import WatcherGithub, WatcherGithubHistory
-from urlparse import urlparse
 from django.conf import settings
-from os import path
-from pprint import pprint
 from djcelery.models import PeriodicTask, IntervalSchedule
 from django.db import transaction
 import json
@@ -39,6 +35,7 @@ def _watcher_error(gh_path, reason, disable=False):
     print "Updating status"
     watcher.save()
 
+
 @app.task
 @transaction.atomic
 def check_github_url(gh_path):
@@ -58,12 +55,12 @@ def check_github_url(gh_path):
 
     try:
         r = requests.get(
-                api_url,
-                headers={
-                    "Authorization": "token " + settings.API_TOKEN
-                },
-                params=params
-            )
+            api_url,
+            headers={
+                "Authorization": "token " + settings.API_TOKEN
+            },
+            params=params
+        )
         if r.status_code != 200:
             reason = "bad response from url: {} status_code: {} reason: {}".format(
                 api_url,
@@ -84,7 +81,7 @@ def check_github_url(gh_path):
         watcher_history, created = WatcherGithubHistory.objects.get_or_create(
             watchergithub=watcher,
             sha=sha,
-            commit = commit,
+            commit=commit,
         )
 
         if watcher_previous and watcher_previous.sha != sha:
@@ -96,10 +93,10 @@ def check_github_url(gh_path):
                 repo=watcher.repo)
 
             r = requests.get(
-                    api_url,
-                    headers={
-                        "Authorization": "token " + settings.API_TOKEN
-                    })
+                api_url,
+                headers={
+                    "Authorization": "token " + settings.API_TOKEN
+                })
 
             commits = r.json()['commits']
 
