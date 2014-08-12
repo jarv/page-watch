@@ -72,40 +72,6 @@ class GetGithubChanges(Feed):
         return WatcherGithubHistory.objects.filter(watchergithub=obj).order_by('-id')[:30]
 
 
-#class Notify(APIView):
-#    """
-#    Subscribes a user to a github path check
-#    """
-#    def post(self, request):
-#        gh_path = request.DATA.get('gh_path', None)
-#        email = request.DATA.get('email', None)
-#
-#        if not gh_path or not email:
-#            return Response({
-#                'status': 'errored',
-#                'reason': 'You must pass in a github path and email'})
-#        try:
-#            validate_email(email)
-#        except ValidationError:
-#            return Response({
-#                'status': 'errored',
-#                'reason': 'Invalid email'})
-#
-#        try:
-#            user, repo, branch, file_path, gh_path = path_github_parse(gh_path)
-#        except PathParseFail as e:
-#            return Response({
-#                'status': 'errored',
-#                'reason': str(e)})
-#            raise
-#
-#        try:
-#            watcher = WatcherGithub.objects.get(gh_path=gh_path)
-#        except WatcherGithub.DoesNotExist:
-#            return Response({
-#                    'status': 'errored',
-#                    'reason': 'Github path does not exist'})
-
 class CheckGithubUrl(APIView):
     """
     Checks a github URL
