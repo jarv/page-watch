@@ -72,9 +72,8 @@ def check_github_url(gh_path):
         if len(r.json()) == 0:
             _watcher_error(gh_path, "No results returned for {}".format(gh_path))
             return
-
-        commits = json.dumps(r.json(), indent=4, sort_keys=True)
-        latest_sha = r.json()[0]['sha']
+        commits = r.json()
+        latest_sha = commits[0]['sha']
         watcher_previous = WatcherGithubHistory.objects.filter(
             watchergithub=watcher).order_by('-id').first()
 
@@ -84,18 +83,23 @@ def check_github_url(gh_path):
         )
 
         if created:
-            watcher_history.commits = commits
+            if watcher_previous:
+                # Save the diff link since the last poll
+                watcher_history.diff = "https://github.com/{user}/{repo}/compare/{previous}...{current}".format(
+                    previous=watcher_previous.latest_sha,
+                    current=latest_sha,
+                    user=watcher.user,
+                    repo=watcher.repo)
+                saved_commits = []
+                for commit in commits:
+                    if commit['sha'] == watcher_previous.latest_sha:
+                        break
+                    saved_commits.append(commit)
+                watcher_history.commits = json.dumps(saved_commits, indent=4, sort_keys=True)
+            else:
+                watcher_history.commits = json.dumps(commits, indent=4, sort_keys=True)
             watcher_history.save()
 
-        if watcher_previous and watcher_previous.latest_sha != latest_sha:
-            # Save the diff link since the last poll
-            watcher_history.diff = "https://github.com/{user}/{repo}/compare/{previous}...{current}".format(
-                previous=watcher_previous.latest_sha,
-                current=latest_sha,
-                user=watcher.user,
-                repo=watcher.repo)
-
-        watcher_history.save()
         watcher.ratelimit_remaining = r.headers['X-RateLimit-Remaining']
         watcher.ratelimit = r.headers['x-ratelimit-limit']
         watcher.status = WatcherGithub.STATUS.processed

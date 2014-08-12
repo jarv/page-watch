@@ -30,7 +30,7 @@ class GetGithubChanges(Feed):
         return obj.get_absolute_url()
 
     def description(self, obj):
-        return "Periodically watch {gh_path} for changes".format(obj.watchergithub.gh_path[1:])
+        return "Periodically watch {} for changes".format(obj.gh_path[1:])
 
     def item_description(self, obj):
         rss_entry = "<b>Commits sine the last poll:</b>"
