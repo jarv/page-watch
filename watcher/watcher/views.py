@@ -7,6 +7,8 @@ import json
 from os.path import basename
 from watcher.models import WatcherGithub, WatcherGithubHistory, WatcherGithubNotifications
 from .util import path_github_parse, PathParseFail, get_commit_info
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
 
 
 class GetGithubChanges(Feed):
@@ -143,7 +145,8 @@ class CheckGithubUrl(APIView):
 
     def post(self, request):
         gh_path = request.DATA.get('gh_path', None)
-        email = request.DATA.get('email', None)
+        subscribe_email = request.DATA.get('subscribe_email', None)
+        unsubscribe_email = request.DATA.get('unsubscribe_email', None)
 
         if not gh_path:
             return Response({
@@ -157,18 +160,42 @@ class CheckGithubUrl(APIView):
                 'status': 'errored',
                 'reason': str(e)})
 
-        url = "https://github.com{}".format(gh_path)
-        watcher, created = WatcherGithub.objects.get_or_create(gh_path=gh_path)
+        if subscribe_email or unsubscribe_email:
+            try:
+                validate_email(subscribe_email)
+            except ValidationError:
+                return Response({
+                    'status': 'errored',
+                    'reason': 'Invalid email'})
+            try:
+                watcher = WatcherGithub.objects.get(gh_path=gh_path)
+            except WatcherGithub.DoesNotExist:
+                return Response({
+                    'status': 'errored',
+                    'reason': 'GitHub path does not exist'})
+            if subscribe_email:
+                notification, created = WatcherGithubNotifications.objects.get_or_create(email=subscribe_email)
+                notification.save()
+                watcher.notifications.add(notification)
+                watcher.save()
 
-        if email:
-            print "Email!! {}".format(email)
-            notification, created = WatcherGithubNotifications.objects.get_or_create(email=email)
-            notification.save()
-            watcher.notifications.add(notification)
-            watcher.save()
-            return Response({'status': 'processed'})
+            if unsubscribe_email:
+                try:
+                    notification = WatcherGithubNotifications.objects.get(email=unsubscribe_email)
+                    watcher.notifications.remove(notification)
+                    watcher.save()
+                except WatcherGithubNotifications.DoesNotExist:
+                    return Response({
+                        'status': 'errored',
+                        'reason': 'Email does not exist'})
+
+            return Response(dict(
+                status='processed',
+                gh_path=gh_path))
 
         else:
+            watcher, created = WatcherGithub.objects.get_or_create(gh_path=gh_path)
+            url = "https://github.com{}".format(gh_path)
             if created or watcher.status != WatcherGithub.STATUS.processed:
                 watcher.status = WatcherGithub.STATUS.initialized
                 watcher.location = url
@@ -178,10 +205,9 @@ class CheckGithubUrl(APIView):
                 watcher.file_path = file_path
                 watcher.save()
                 check_github_url.delay(gh_path=gh_path)
-                resp = dict(
+                return Response(dict(
                     gh_path=gh_path,
-                    status='processing')
-                return Response(resp)
+                    status='processing'))
             else:
                 return Response(_get_watcher_with_history(watcher))
 
