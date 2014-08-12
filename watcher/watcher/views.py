@@ -183,7 +183,7 @@ def _get_watcher_with_history(watcher):
     commits = json.loads(watcher_history.commits)
     sha, login, login_url, name, avatar_url, commit_url, commit_msg = get_commit_info(commits[0])
 
-    resp = dict(
+    return(dict(
         gh_path=watcher.gh_path,
         location=watcher.location,
         user=watcher.user,
@@ -195,5 +195,4 @@ def _get_watcher_with_history(watcher):
         sha=sha[:8],
         created=str(watcher_history.created),
         updated=str(watcher_history.updated),
-        status='processed')
-    return resp
+        status='processed'))
