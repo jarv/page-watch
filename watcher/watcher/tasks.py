@@ -73,40 +73,27 @@ def check_github_url(gh_path):
             _watcher_error(gh_path, "No results returned for {}".format(gh_path))
             return
 
-        sha = r.json()[0]['sha']
-        commit = json.dumps(r.json()[0], indent=4, sort_keys=True)
+        commits = json.dumps(r.json(), indent=4, sort_keys=True)
+        latest_sha = r.json()[0]['sha']
         watcher_previous = WatcherGithubHistory.objects.filter(
             watchergithub=watcher).order_by('-id').first()
 
         watcher_history, created = WatcherGithubHistory.objects.get_or_create(
             watchergithub=watcher,
-            sha=sha,
-            commit=commit,
+            latest_sha=latest_sha,
         )
 
-        if watcher_previous and watcher_previous.sha != sha:
-            # Save the commit history
-            api_url = "https://api.github.com/repos/{user}/{repo}/compare/{previous}...{sha}".format(
-                previous=watcher_previous.sha,
-                sha=sha,
+        if created:
+            watcher_history.commits = commits
+            watcher_history.save()
+
+        if watcher_previous and watcher_previous.latest_sha != latest_sha:
+            # Save the diff link since the last poll
+            watcher_history.diff = "https://github.com/{user}/{repo}/compare/{previous}...{current}".format(
+                previous=watcher_previous.latest_sha,
+                current=latest_sha,
                 user=watcher.user,
                 repo=watcher.repo)
-
-            r = requests.get(
-                api_url,
-                headers={
-                    "Authorization": "token " + settings.API_TOKEN
-                })
-
-            commits = r.json()['commits']
-
-            watcher_history.diff = "https://github.com/{user}/{repo}/compare/{previous}...{sha}".format(
-                previous=watcher_previous.sha,
-                sha=sha,
-                user=watcher.user,
-                repo=watcher.repo)
-
-            watcher_history.commits = json.dumps(commits, indent=4, sort_keys=True)
 
         watcher_history.save()
         watcher.ratelimit_remaining = r.headers['X-RateLimit-Remaining']

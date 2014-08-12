@@ -42,7 +42,7 @@ $(document).ready(() ->
         <li class="path"><a href="#{data.location}">#{data.gh_path.substr(1)}</a></li>
         <li class="updated">last checked on #{formattedTime}</li>
         <li class="avatar"><img src="#{data.commit_avatar_url}" alt="#{data.user}" /></li>
-        <li class="commit"><a href="#{data.html_url}">#{data.sha}</a></li>
+        <li class="commit"><a href="#{data.commit_url}">#{data.sha}</a></li>
         <li class="commit-msg">#{data.commit_msg}</li>
       </ul>
       """)

@@ -15,7 +15,11 @@ class Migration(migrations.Migration):
             name='WatcherGithub',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('gh_path', models.CharField(default=b'', max_length=255, db_index=True)),
+                ('gh_path', models.CharField(default=b'', max_length=2048, db_index=True)),
+                ('user', models.CharField(default=b'', max_length=255)),
+                ('repo', models.CharField(default=b'', max_length=255)),
+                ('branch', models.CharField(default=b'', max_length=255)),
+                ('file_path', models.CharField(default=b'', max_length=2048)),
                 ('location', models.URLField()),
                 ('status', models.CharField(default=b'initialized', max_length=32, choices=[(b'initialized', b'initialized'), (b'processing', b'processing'), (b'processed', b'processed'), (b'errored', b'errored')])),
                 ('last_error', models.TextField(default=b'')),
@@ -34,9 +38,8 @@ class Migration(migrations.Migration):
             name='WatcherGithubHistory',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('sha', models.CharField(default=None, max_length=255)),
+                ('latest_sha', models.CharField(default=None, max_length=255)),
                 ('diff', models.URLField()),
-                ('commit', models.TextField(default=b'')),
                 ('created', models.DateTimeField(auto_now_add=True)),
                 ('updated', models.DateTimeField(auto_now=True)),
                 ('commits', models.TextField(default=b'')),
@@ -49,6 +52,22 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterUniqueTogether(
             name='watchergithubhistory',
-            unique_together=set([(b'watchergithub', b'sha')]),
+            unique_together=set([(b'watchergithub', b'latest_sha')]),
+        ),
+        migrations.CreateModel(
+            name='WatcherGithubNotifications',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('email', models.EmailField(max_length=75)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.AddField(
+            model_name='watchergithub',
+            name='notifications',
+            field=models.ManyToManyField(to='watcher.WatcherGithubNotifications'),
+            preserve_default=True,
         ),
     ]

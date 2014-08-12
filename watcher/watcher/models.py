@@ -1,6 +1,7 @@
 from django.db import models
 import json
 from model_utils import Choices
+from .util import get_commit_info
 
 
 class WatcherGithubNotifications(models.Model):
@@ -36,17 +37,17 @@ class WatcherGithub(models.Model):
 
 class WatcherGithubHistory(models.Model):
     watchergithub = models.ForeignKey('WatcherGithub')
-    sha = models.CharField(max_length=255, default=None)
+    latest_sha = models.CharField(max_length=255, default=None)
     diff = models.URLField()
-    commit = models.TextField(default='')
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     commits = models.TextField(default='')
 
     def get_absolute_url(self):
-        commit_info = json.loads(self.commit)
-        return commit_info.get('html_url', self.watchergithub.location)
+        commits = json.loads(self.commits)
+        sha, login, login_url, name, avatar_url, commit_url, commit_msg = get_commit_info(commits[0])
+        return commit_url
 
     class Meta:
-        unique_together = ('watchergithub', 'sha')
+        unique_together = ('watchergithub', 'latest_sha')
         ordering = ('created',)

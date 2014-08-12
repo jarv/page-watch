@@ -87,7 +87,7 @@ USE_TZ = True
 
 SITE_BASE = 'http://localhost:8000'
 MAX_ERRORS = 3
-INTERVAL_EVERY = 15
+INTERVAL_EVERY = 1
 INTERVAL_PERIOD = 'minutes'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
