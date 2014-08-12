@@ -33,7 +33,7 @@ class GetGithubChanges(Feed):
         return "Periodically watch {} for changes".format(obj.gh_path[1:])
 
     def item_description(self, obj):
-        rss_entry = "<b>Commits sine the last poll:</b>"
+        rss_entry = "<b>Commits since last poll:</b>"
 
         if obj.diff != '':
             rss_entry += " <a href='{diff}'>(diff)</a>".format(diff=obj.diff)
@@ -60,8 +60,8 @@ class GetGithubChanges(Feed):
     def item_title(self, obj):
         commits = json.loads(obj.commits)
         sha, login, login_url, name, avatar_url, commit_url, commit_msg = get_commit_info(commits[0])
-        return """Detected change for {gh_path} made by {name} ({login}) - {commit_msg}""".format(
-            gh_path=obj.watchergithub.gh_path[1:],
+        return """New commits for {gh_path_basename}, most recent made by {name} ({login}) - {commit_msg}""".format(
+            gh_path_basename=basename(obj.watchergithub.gh_path[1:]),
             name=name,
             login=login,
             commit_msg=commit_msg)
