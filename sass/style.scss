@@ -2,6 +2,8 @@
 @import 'neat/neat';
 @import 'base/base';
 
+$medium-gray: #5b5e63;
+$pale-green: #E7F1EC;
 $large-screen:  new-breakpoint(max-width 1200px 12);
 $base-accent-color: black;
 $dark-purple: #00008B;
@@ -11,23 +13,23 @@ $light-light-purple: lighten($dark-purple, 72);
 html, body {
   height: 100%;
 }
-.hero {
-  $hero-background-top: $dark-purple;
-  $hero-background-bottom: black;
-  $hero-color: white;
-  $hero-image: '/imgs/space.png';
+.watcher {
+  $watcher-background-top: $dark-purple;
+  $watcher-background-bottom: black;
+  $watcher-color: white;
+  $watcher-image: '/imgs/space.png';
   $spinner-color: $blue;
-  // @include linear-gradient($hero-background-bottom, $hero-background-top);
+  // @include linear-gradient($watcher-background-bottom, $watcher-background-top);
 
-  background-color: $dark-dark-purple;
+  background-color: $pale-green;
   padding-bottom: 4em;
   height: 100%;
-  .hero-logo img {
+  .watcher-logo img {
     height: 3em;
     margin-bottom: 2.5em;
   }
 
-  .hero-inner {
+  .watcher-inner {
     @include outer-container;
     @include clearfix;
     .rounded-border {
@@ -36,7 +38,7 @@ html, body {
     padding: 3em;
     margin: auto;
     text-align: center;
-    color: $hero-color;
+    color: $watcher-color;
     .box-shadow {
       box-shadow: 0 0 15px rgba(0,0,0,0.2);
     }
@@ -199,7 +201,7 @@ html, body {
       
     }
 
-    .hero-copy {
+    .watcher-copy {
       text-align: center;
       
       h1 {
