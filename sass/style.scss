@@ -1,6 +1,8 @@
 @import 'bourbon/bourbon';
 @import 'neat/neat';
 @import 'base/base';
+@import 'textures';
+@import 'navigation';
 
 $medium-gray: #5b5e63;
 $pale-green: #E7F1EC;
@@ -10,32 +12,32 @@ $dark-purple: #00008B;
 $dark-dark-purple: darken($dark-purple, 20);
 $dark-dark-dark-purple: darken($dark-purple, 30);
 $light-light-purple: lighten($dark-purple, 72);
+$texture-num: 24;
+$error-color: red;
+.texture {
+  height: 5em;
+  width: 100%;
+}
+
+
+
 html, body {
   height: 100%;
 }
 .watcher {
-  $watcher-background-top: $dark-purple;
-  $watcher-background-bottom: black;
-  $watcher-color: white;
+  $watcher-color: $medium-gray;
   $watcher-image: '/imgs/space.png';
   $spinner-color: $blue;
-  // @include linear-gradient($watcher-background-bottom, $watcher-background-top);
-
-  background-color: $pale-green;
+  @include texture(180deg, lighten($pale-green, 10), darken($pale-green, 10), $texture-num, 0); 
   padding-bottom: 4em;
   height: 100%;
-  .watcher-logo img {
-    height: 3em;
-    margin-bottom: 2.5em;
-  }
-
   .watcher-inner {
     @include outer-container;
     @include clearfix;
     .rounded-border {
       border-radius: 15px;
     }
-    padding: 3em;
+    padding: 1em;
     margin: auto;
     text-align: center;
     color: $watcher-color;
@@ -50,7 +52,7 @@ html, body {
 
     .file-monitor {
       @include clearfix;
-      border: 3px solid $dark-dark-dark-purple;
+      border: 3px solid lighten($medium-gray, 10);
       .url-wrapper {
         @include clearfix;
         width: 100%;
@@ -60,7 +62,7 @@ html, body {
           width: 100%;
           padding: 15px;
           border: 1px solid #b5c6d2;
-          font-size: 1.2em;
+          font-size: 1em;
           float: left;
         }
         button {
@@ -73,7 +75,7 @@ html, body {
       }
       .error-wrapper {
         @include clearfix;
-        color: $error-color;
+        color: lighten($error-color, 40);
         display: none;
         position: relative;
         width: 400px;
@@ -88,7 +90,7 @@ html, body {
           
         }
         .error-message {
-          color: red;
+          color: darken($error-color, 10);
           text-align: center;
           position: absolute;
           top: 15px;
@@ -126,7 +128,7 @@ html, body {
           width: 400px;
           height: 50px;
           border: 1px solid #b5c6d2;
-          font-size: 1.2em;
+          font-size: 1em;
         }
         button {
           font-size: .7em;
@@ -140,7 +142,7 @@ html, body {
 
       }
       padding: 20px;
-      background-color: white;
+      @include texture(180deg, $pale-green, $pale-green, $texture-num, 1); 
       .spinner-wrapper {
         @include clearfix;
         color: $spinner-color;
@@ -203,30 +205,25 @@ html, body {
 
     .watcher-copy {
       text-align: center;
-      
+      color: lighten($medium-gray, 20);
       h1 {
-        font-size: 1.6em;
-        margin-bottom: .5em;
+        font-size: 1.5em;
+        margin-bottom: .1em;
         a {
-          color: white;
+          color: $medium-gray;
         }
 
-        @include media($large-screen) {
-          font-size: 1.8em;
-        }
+        font-size: 1.8em;
       }
 
       p {
         font-family: $serif;
         margin: auto;
-        margin-bottom: 3em; 
+        margin-bottom: 1em; 
         font-weight: 200;
         line-height: 1.4em;
-
-        @include media($large-screen) {
-          font-size: 1.1em;
-          max-width: 40%;
-        }
+        font-size: 1.1em;
+        max-width: 40%;
       }
     }
   }

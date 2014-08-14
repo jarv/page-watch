@@ -1,0 +1,17 @@
+.texture {
+  height: 5em;
+  width: 100%; }
+
+.texture-normal {
+  background: url("https://raw.githubusercontent.com/thoughtbot/refills/master/source/images/textures/diagonal-noise.png"), -webkit-linear-gradient(180deg, #e1f2f1, #bae0de), repeat #e1f2f1 scroll;
+  background: url("https://raw.githubusercontent.com/thoughtbot/refills/master/source/images/textures/diagonal-noise.png"), linear-gradient(180deg, #e1f2f1, #bae0de), repeat #e1f2f1 scroll;
+  float: left;
+  height: 5em;
+  width: 50%; }
+
+.texture-inverted {
+  background: url("https://raw.githubusercontent.com/thoughtbot/refills/master/source/images/textures/inverted/diagonal-noise.png"), -webkit-linear-gradient(180deg, #e1f2f1, #bae0de), repeat #e1f2f1 scroll;
+  background: url("https://raw.githubusercontent.com/thoughtbot/refills/master/source/images/textures/inverted/diagonal-noise.png"), linear-gradient(180deg, #e1f2f1, #bae0de), repeat #e1f2f1 scroll;
+  float: left;
+  height: 5em;
+  width: 50%; }
