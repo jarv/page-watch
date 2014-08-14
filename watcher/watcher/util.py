@@ -52,4 +52,4 @@ def get_commit_info(commit):
     except (KeyError, TypeError):
         commit_msg = "No commit message"
 
-    return sha, login, login_url, name, avatar_url, commit_url, commit_msg
+    return sha, login.encode('utf-8'), login_url, name.encode('utf-8'), avatar_url, commit_url, commit_msg.encode('utf-8')
