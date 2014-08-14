@@ -112,8 +112,10 @@ class CheckGithubUrl(APIView):
     def post(self, request):
         gh_path = request.DATA.get('gh_path', None)
         subscribe_email = request.DATA.get('subscribe_email', None)
+        if subscribe_email in ['undefined', '']:
+            subscribe_email = None
         unsubscribe_email = request.DATA.get('unsubscribe_email', None)
-
+        print request.DATA
         if not gh_path:
             return Response({
                 'status': 'errored',
@@ -140,6 +142,7 @@ class CheckGithubUrl(APIView):
                     'status': 'errored',
                     'reason': 'GitHub path does not exist'})
             if subscribe_email:
+                print "subscribing!"
                 notification, created = WatcherGithubNotifications.objects.get_or_create(email=subscribe_email)
                 notification.save()
                 watcher.notifications.add(notification)

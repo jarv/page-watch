@@ -20,7 +20,7 @@ $(document).ready(() ->
     $(".info-wrapper").hide()
     $(".notification-wrapper").hide()
     $(".error-wrapper").show()
-    $("input.email").val('')
+    $("input.subscribe-email").val('')
 
   showInfo = () ->
     $(".spinner-wrapper").hide()
@@ -37,13 +37,17 @@ $(document).ready(() ->
     month = date.getMonth()
     day = date.getDate()
     formattedTime = year + '-' + pad(month,2) + '-' + pad(day,2) + ' ' + pad(hours,2) + ':' + pad(minutes,2)
+    if data.commit_msg.length > 500
+      commit_msg = data.commit_msg.substring(0, 500) + "...(truncated)"
+    else
+      commit_msg = data.commit_msg
     $('.info-wrapper .info').html("""
       <ul class="rounded-border">
         <li class="path"><a href="#{data.location}">#{data.gh_path.substr(1)}</a></li>
         <li class="updated">last checked on #{formattedTime}</li>
         <li class="avatar"><img src="#{data.commit_avatar_url}" alt="#{data.user}" /></li>
         <li class="commit"><a href="#{data.commit_url}">#{data.sha}</a></li>
-        <li class="commit-msg">#{data.commit_msg}</li>
+        <li class="commit-msg">#{commit_msg}</li>
       </ul>
       """)
     feed_url = encodeURIComponent("http://file-watcher.jarv.org/f#{data.gh_path}.xml")
@@ -60,7 +64,7 @@ $(document).ready(() ->
     $('.info-wrapper .info').html("")
     form_data = new FormData()
     form_data.append('url', $("input.web-url").val())
-    form_data.append('email', $("input.email").val())
+    form_data.append('subscribe_email', $("input.subscribe-email").val())
     parser = document.createElement('a')
     parser.href = $("input.web-url").val()
     form_data.append('gh_path', parser.pathname)

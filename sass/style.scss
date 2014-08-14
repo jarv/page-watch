@@ -102,45 +102,45 @@ html, body {
         }
       }
       .notification-wrapper {
-        @include clearfix;
-        display: none;
-        position: relative;
-        width: 500px;
-        margin: 0px auto;
-        height: 60px;
-        .rss-icon {
-          left: 0px;
-          position: absolute; 
-          color: #ff6600;
-          font-size: 55px;
-        }
-        .feedly-icon {
-          left: 50px;
-          top: 4px;
-          position: absolute; 
-        }
+          @include clearfix;
+          display: none;
+          position: relative;
+          width: 500px;
+          margin: 0px auto;
+          height: 60px;
+          .rss-icon {
+            left: 0px;
+            position: absolute; 
+            color: #ff6600;
+            font-size: 55px;
+          }
+          .feedly-icon {
+            left: 50px;
+            top: 4px;
+            position: absolute; 
+          }
 
-        input[type="text"] {
-          right: 0px;
-          position: absolute; 
-          box-sizing: border-box;
-          padding: 5px;
-          width: 400px;
-          height: 50px;
-          border: 1px solid #b5c6d2;
-          font-size: 1em;
-        }
-        button {
-          font-size: .7em;
-          position: absolute;
-          top: 4px;
-          right: 5px;
-          height: 42px;
-          width: 150px;
-          text-align: center;
-        }
-
+          input[type="text"] {
+            right: 0px;
+            position: absolute; 
+            box-sizing: border-box;
+            padding: 5px;
+            width: 400px;
+            height: 50px;
+            border: 1px solid #b5c6d2;
+            font-size: 1em;
+          }
+          button {
+            font-size: .7em;
+            position: absolute;
+            top: 4px;
+            right: 5px;
+            height: 42px;
+            width: 150px;
+            text-align: center;
+          }
       }
+
       padding: 20px;
       @include texture(180deg, $pale-green, $pale-green, $texture-num, 1); 
       .spinner-wrapper {
@@ -200,7 +200,6 @@ html, body {
           display: none;
         }
       }
-      
     }
 
     .watcher-copy {
