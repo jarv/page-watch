@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="stylesheet" href="css/normalize.min.css">
+        <link rel="stylesheet" href="css/main.css">
+        <link rel="stylesheet" href="css/magnifier.css">
+        <link rel="stylesheet" href="css/style.css">
+        <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+        <script src="js/vendor/modernizr-2.6.2.min.js"></script>
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+
+      <div class="fade"></div>
+      <div class="overlay"></div>
+      <div class="watcher">
+
+        <header class="centered-navigation">
+          <div class="centered-navigation-wrapper">
+            <ul class="centered-navigation-menu">
+              <li class="nav-link"><a href="javascript:void(0)">About</a></li>
+              <li class="nav-link logo">
+                <a href="/" class="logo">
+                </a>
+              </li>
+              <li class="nav-link"><a href="/#/h/z8w">Demo</a></li>
+            </ul>
+          </div>
+        </header>
+
+        <div class="watcher-inner">
+          <div class="watcher-copy">
+            <h1><a href="/">Page Watch - A simple way to watch a web page for changes</a></h1>
+            <p><i>Check a URL, <b>click on the screenshots</b> to zoom</i>
+          </div>
+          <div class="file-monitor rounded-border box-shadow">
+            <form action="#" method="POST" id="watcher-submit" class="rounded-border create-form">
+              <div class="url-wrapper">
+                <div class="select-box">
+                  Check for changes every:
+                  &nbsp;
+                  <input type="radio" name="interval" id="hour" value="h" checked>
+                    <label class="rounded-border" name="interval" for="hour">Hour</label>
+                  &nbsp;
+                  <input type="radio" name="interval" id="day" value="d">
+                    <label class="rounded-border" name="interval" for="day">Day</label>
+                  &nbsp;
+                  <input type="radio" name="interval" id="week" value="w">
+                    <label class="rounded-border" name="interval" for="week">Week</label>
+                </div> 
+                <button class="rounded-border" name="url-button">Check</button>
+                <input type="text" class="rounded-border web-url" placeholder="Enter any URL, e.g. https://google.com" name="url" />
+              </div>
+              <div class="watcher-results-wrapper">
+                <div class="preview-wrapper">
+                  <div class="disable-preview previews">
+                    <div class="fetch-loader">
+                      <div class="spinner-message">Fetching information<br />for this url</div>
+                    </div>
+                    <div class="screenshot-msg">
+                      Screenshot
+                    </div>
+
+                    <div id="preview-zoom"></div>
+                  </div>
+                  <div class="disable-preview previews notification-wrapper">
+                    <table>
+                      <tr> <td class="name">Number of server checks</td> <td class="value" id="checks">- - - - </td></tr>
+                      <tr> <td class="name">Last server check</td> <td class="value" id="last_check">- - - - </td></tr>
+                      <tr> <td class="name">Number of changes</td> <td class="value" id="changes">- - - - </td></tr>
+                      <tr> <td class="name">Last change</td> <td class="value" id="last_change">- - - - </td></tr>
+                      <tr> <td class="name">Checks remaining</td> <td class="value" id="checks_remaining">- - - - </td></tr>
+                      <tr> <td class="name">Sponsor</td> <td class="value" id="sponsor">- - - - </td></tr>
+                    </table>
+                    <div class="email-rss-wrapper">
+                      <span class="rss-icon"><i class="fa fa-rss-square fa-5x rss-icon"></i></span>
+                      <input type="text" disabled="disabled" class="rounded-border email disable-input" placeholder="me@example.com" name="subscribe_email" id="subscribe-email" />
+                      <button disabled="disabled" class="rounded-border disable-button" name="notification-button" >Send Me<br />Notifications</button>
+                    </div>
+                    <div class="error-wrapper">
+                      <div class="error-icon"><i class="fa fa-warning fa-5x"></i></div>
+                      <div class="error-message">Unable to fetch URL</span>
+                    </div>
+                  </div>
+                </div> <!-- preview-wrapper -->
+                <div class="diff-wrapper" class="rounded-border">
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>  <!-- watcher-inner -->
+      </div>
+
+      <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+      <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.0.min.js"><\/script>')</script>
+      <script type="text/javascript" src="js/vendor/jquery.zoom.js"></script>
+      <script src="js/plugins.js"></script>
+      <script src="js/vendor/underscore-min.js"></script>
+      <script src="js/vendor/backbone-min.js"></script>
+
+      <script src="js/page-watch.js"></script>
+
+      <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+      <script>
+          (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
+          function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
+          e=o.createElement(i);r=o.getElementsByTagName(i)[0];
+          e.src='//www.google-analytics.com/analytics.js';
+          r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
+          ga('create','UA-XXXXX-X');ga('send','pageview');
+      </script>
+    </body>
+</html>

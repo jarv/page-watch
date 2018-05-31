@@ -1,0 +1,10 @@
+<html>
+<head><title>Unsubscribe</title></head>
+<body>
+{% if status == "errored" %}
+<strong>Unable to process your unsubscribe request</strong>: {{ reason }}
+{% elif status == "processed" %}
+<strong>Unsubscribed</strong>:{{ email }} will no longer receive notifications for {{ url }}
+{% endif %}
+</body>
+</html>

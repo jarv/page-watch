@@ -1,0 +1,556 @@
+@import 'bourbon/bourbon';
+//$visual-grid: true;
+$visual-grid-color: yellow;
+$visual-grid-index: front;
+$visual-grid-opacity: 0.1;
+@import 'neat/neat';
+@import 'base/base';
+
+$gray: #8d9197;
+$bg-color: #f4f9fb;
+$maroon: #774d55;
+$rss-orange: #ff6600;
+$dark-blue: #4d6774;
+$error-color: red;
+$error-color-dark: darken($error-color, 10);
+
+@font-face {
+  font-family: "Bad Script";
+  src: url("fonts/BadScript-Regular.ttf");
+}
+
+@font-face {
+  font-family: "BreeSerif";
+  src: url("fonts/BreeSerif-Regular.ttf");
+}
+
+.my-fa-facebook:before {
+  content: "\f09a";
+}
+.my-fa-facebook-square:before {
+  content: "\f082";
+}
+.my-fa-flickr:before {
+  content: "\f16e";
+}
+.my-fa-google-plus-square:before {
+  content: "\f0d4";
+}
+.my-fa-google-plus:before {
+  content: "\f0d5";
+}
+.my-fa-google:before {
+  content: "\f1a0";
+}
+.my-fa-instagram:before {
+  content: "\f16d";
+}
+.my-fa-linkedin:before {
+  content: "\f0e1";
+}
+.my-fa-linkedin-square:before {
+  content: "\f08c";
+}
+.my-fa-pinterest:before {
+  content: "\f0d2";
+}
+.my-fa-pinterest-square:before {
+  content: "\f0d3";
+}
+.my-fa-reddit:before {
+  content: "\f1a1";
+}
+.my-fa-reddit-square:before {
+  content: "\f1a2";
+}
+.my-fa-share-square-o:before {
+  content: "\f045";
+}
+.my-fa-share-alt:before {
+  content: "\f1e0";
+}
+.my-fa-soundcloud:before {
+  content: "\f1be";
+}
+.my-fa-tumblr:before {
+  content: "\f173";
+}
+.my-fa-tumblr-square:before {
+  content: "\f174";
+}
+.my-fa-twitter-square:before {
+  content: "\f081";
+}
+.my-fa-twitter:before {
+  content: "\f099";
+}
+.my-fa-youtube-square:before {
+  content: "\f166";
+}
+.my-fa-youtube:before {
+  content: "\f167";
+}
+.my-fa-youtube-play:before {
+  content: "\f16a";
+}
+
+
+body {
+  background-color: $bg-color;
+}
+
+button {
+  margin: 0px;
+  vertical-align: top;
+  text-align: center;
+  display: inline-block;
+  height: 40px;
+  overflow: hidden;
+  border-radius: 0px;
+  background-color: $dark-blue;
+}
+
+button:hover {
+  background-color: $maroon;
+}
+
+div.content {
+  @media screen and (min-width: 850px) {
+    @include outer-container(65%);
+  }
+  @media screen and (max-width: 850px) {
+    @include outer-container(100%);
+  }
+}
+header {
+  font-size: 1.5em;
+  text-align: center;
+  h1 {
+    color: white;
+    line-height: 1em;
+    font-family: "BreeSerif";
+    text-shadow:
+     -1px -1px 0 $gray,  
+      1px -1px 0 $gray,
+     -1px 1px 0 $gray,
+      1px 1px 0 $gray;
+    @media screen and (min-width: 850px) {
+      font-size: 4em;
+    }
+    @media screen and (max-width: 850px) {
+      font-size: 3em;
+    }
+    font-style: normal;
+    margin-bottom: 10px;
+    a:hover {
+      color: white;
+    }
+    a {
+      color: white;
+    }
+  }
+  span.sub {
+    font-family: 'Georgia,Cambria,"Times New Roman",Times,serif';
+    font-family: "Londrina";
+    // font-style: italic; 
+    color: $gray;
+    font-weight: normal;
+    font-size: 1em;
+  }
+}
+section.instructions {
+
+  @include span-columns(8);
+  @include shift(2);
+  display: none;
+  ul {
+    li {
+      color: $dark-blue;
+      font-size: 1em;
+      padding: .2em;
+    }
+
+  }
+  div.icons {
+    text-align: center;
+    margin: 0;
+    padding: 1em;
+    i {
+      border-radius: 5px;
+      padding: 2px;
+      margin: 2px;
+    }
+  }
+  div.icon-header {
+    font-weight: bold;
+    h2 {
+      font-size: 1.5em;
+    }
+    color: $maroon;
+    text-align: center;
+    
+  }
+
+}
+section.check {
+  @include span-columns(12);
+  div.input-wrap {
+    margin-right: 100px;
+    input {
+      width: 100%;
+      height: 40px;
+      border-radius: 0px;
+      margin-bottom: .3em;
+    }
+  }
+  div.button-wrap {
+    float: right;
+    button {
+      width: 90px;
+    }
+  }
+  .select-box {
+    width: 100%; 
+    font-size: .8em;
+    display: inline-block;
+    text-align: center;
+    margin-bottom: 1em;
+    input[type="radio"] {
+      display: none;
+    }
+    label {
+      border-radius: 10px;
+    }
+    input[type=radio] + label {
+      @media screen and (min-width: 850px) {
+        width: 25%;
+      }
+      @media screen and (max-width: 850px) {
+        width: 50%;
+      }
+      width: 20%;
+      display:inline-block;
+      margin:-2px 0px 0px 0px;
+      padding: 4px 12px;
+      background-color: #e7e7e7;
+      cursor: pointer;
+    }
+    input.disabled[type=radio] + label {
+      background-color: lighten(#e7e7e7, 2);
+      color: $gray;
+      cursor: not-allowed;
+    }
+    label:hover {
+      // color: $maroon;
+    }
+    // Change background color for label next to checked radio button
+    // to make it look like highlighted button
+    input[type=radio]:checked + label { 
+      background-color: $dark-blue;
+      color: white;
+    }
+    input.disabled[type=radio]:checked + label { 
+      background-color: lighten($dark-blue, 20);
+      color: darken($gray, 30);
+      cursor: not-allowed;
+    }
+  }
+}
+
+section.error {
+
+  @include span-columns(6);
+  @include shift(3);
+  display: none;
+  div.error-wrapper {
+    text-align: center;
+    color: $error-color;
+    background-color: lighten($error-color, 50%);
+    border: 1px solid $error-color;
+    position: relative;
+  }
+  div.error-icon i {
+    opacity: .2;
+    padding: 10px;
+  }
+  div.error-msg {
+    position: absolute;
+    width: 100%;
+    top: 20%;
+    font-size: 1.2em;
+    font-weight: bold;
+    text-align: center;
+  }
+}
+
+section.spinner {
+  @include span-columns(6);
+  @include shift(3);
+  display: none;
+  div.spinner-wrapper {
+    position: relative;
+    div.spinner {
+      width: 100%; 
+      height: 120px;
+      top: 0;
+      opacity: .8;
+      position: absolute;
+      text-align: center;
+    }
+    div.spinner-msg {
+      font-weight: bold;
+      font-size: 2em;
+      position: absolute;
+      width: 100%;
+      top: 10%;
+      text-align: center;
+      color: $dark-blue;
+    }
+  }
+
+}
+div.s-s-wrapper {
+  @include span-columns(12); 
+}
+
+section.screenshot {
+  @media screen and (min-width: 850px) {
+    @include span-columns(6 of 12); 
+  }
+  @media screen and (max-width: 850px) {
+    @include span-columns(12); 
+  }
+  display: none;
+  position: relative;
+  div.screenshot {
+    position: relative;
+    text-align: center;
+  }
+  div.overlay-text {
+    color: $dark-blue;
+    position: absolute;
+    top: 20%;
+    width: 100%;
+    font-size: 2em;
+    font-weight: bold;
+    opacity: .1;
+    pointer-events: none;
+    filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='your_transparent.png', sizingMethod='scale');
+    background: none !important;
+    text-align: center;
+    z-index: 500;
+    display: none;
+  }
+}
+section.subscribe {
+  display: none;
+  @media screen and (min-width: 850px) {
+    @include span-columns(6 of 12); 
+    @include omega();
+  }
+  @media screen and (max-width: 850px) {
+    @include span-columns(12); 
+  }
+  div.rss {
+    display: none;
+    div.rss-icon {
+      color: $rss-orange;
+      a {
+        color: $rss-orange;
+      }
+      a:hover {
+        color: darken($rss-orange, 5);
+      }
+      float: left;
+      vertical-align: bottom;
+    }
+    div.aside  {
+      padding-top: 18px;
+      padding-left: 90px;
+      font-family: 'Bad Script', cursive;
+      color: $dark-blue;
+      font-size: 1.2em;
+    }
+  }
+  div.subscribe-form {
+    display: none;
+    margin-top: 20px;
+    div.input-wrap {
+      margin-right: 100px;
+      input {
+        width: 100%;
+        height: 40px;
+        border-radius: 0px;
+      }
+    }
+    div.button-wrap {
+      float: right;
+      button {
+        width: 90px;
+        font-size: 12px;
+      }
+    }
+    div.notification {
+      font-size: 1em; 
+      width: 100%;
+      text-align: left;
+      padding: 1em;
+      i {
+        vertical-align: middle;
+        margin-right: .4em;
+      }
+      div.success {
+        color: green;
+        padding-left: 70px;
+      }
+      div.error {
+        color: red;
+      }
+      div.info {
+        color: blue;
+      }
+    }
+    
+  }
+}
+section.url-status {
+  @include span-columns(12);
+  color: blue;
+  display: none;
+  div.url-status {
+    padding: .5em;
+    background-color: lighten($bg-color, 2);
+    text-align: center;
+    border-radius: 20px;
+    h2 {
+      color: $dark-blue;
+      font-size: 1.2em;
+    }
+  }
+}
+
+section.stats {
+
+  @include span-columns(12); 
+  background-color: white;
+  display: none;
+  color: $dark-blue;
+  margin-top: 1em;
+  div.content {
+    display: none;
+  }
+  h2 {
+    font-size: 1.4em;
+    background-color: darken($bg-color, 1);
+    color: $maroon;
+    text-align: center;
+    cursor: pointer;
+    border: 1px solid $maroon;
+  }
+  td {
+    font-size: 1em;
+    padding: 0;
+  }
+}
+
+
+section.diffs {
+
+  display: none;
+
+  h2 {
+    @include span-columns(12);
+    font-size: 1em;
+    display: block;
+    text-align: center;
+    padding: .5em;
+    width: 100%;
+    color: $dark-blue;
+  }
+  div.preview-wrapper {
+    @include span-columns(12);
+    position: relative;
+    div.preview {
+      text-align: center;
+
+    }
+    div.preview-left {
+      @include span-columns(6 of 12);
+
+
+    }
+
+    div.preview-right {
+      @include span-columns(6 of 12);
+      @include omega;
+
+    }
+
+
+  }
+}
+
+footer {
+    @include span-columns(12);
+    text-align: center;
+}
+// ***** Loader spinner for fetching the large previews
+
+div.loader {
+  position: absolute;
+  background: url(../imgs/spinner-preview.gif) no-repeat 50% 50% !important;
+  width: 100%; 
+  color: $dark-blue;
+  height: 100px;
+  top: 30%;
+  text-align: center;
+  font-weight: bold;
+  font-size: 2em;
+  display: none;
+  text-align: center;
+}
+// ***** Styles for the zoom overlay
+
+div.fade {
+  display: none;
+  position: absolute;  /* makes the div go into a position that’s absolute to the browser viewing area */
+  left: 0%; /* makes the div span all the way across the viewing area */
+  top: 0%; /* makes the div span all the way across the viewing area */
+  background-color: black;
+  -moz-opacity: 0.7; /* makes the div transparent, so you have a cool overlay effect */
+  opacity: .70;
+  filter: alpha(opacity=70);
+  width: 100%;
+  height: 100%;
+  z-index: 90; /* makes the div the second most top layer, so it’ll lay on top of everything else EXCEPT for divs with a higher z-index (meaning the #overlay ruleset) */
+
+}
+
+div.overlay {
+  display: none;
+  position: absolute; /* makes the div go into a position that’s absolute to the browser viewing area */
+  left: 2%; /* positions the div half way horizontally */
+  top: 10%; /* positions the div half way vertically */
+  padding: 0px; 
+  border: 2px solid $maroon;
+  width: 96%;
+  height: 80%;
+  z-index: 100; /* makes the div the top layer, so it’ll lay on top of the other content */
+  background-color: white;
+}
+
+div.overlay-full {
+  display: none;
+  width: 100%;
+  height: 100%;
+  border: 1px solid $maroon;
+}
+
+.overlay-inner {
+  display: none;
+  float: left;  
+  width: 50%;
+  height: 100%;
+  border: 1px solid $maroon;
+}
+// ***** End styles for the zoom overlay

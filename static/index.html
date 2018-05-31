@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>page-watch</title>
+    <meta name="description" content="visual webpage monitoring, made simple">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="css/page-watch.css">
+    <link rel="stylesheet" href="font-awesome-4.2.0/css/font-awesome.min.css">
+  </head>
+  <body>
+    <!--[if lt IE 7]>
+        <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+  <div class="content">
+  <header>
+    <h1><a href="/">page watch</a></h1>
+    <span class="sub">visual webpage monitoring, made simple (alpha)</span>
+  </header>
+
+  <section class="check">
+    <form action="#" id="check-url">
+        <div class="button-wrap"><button name="check">Check</button></div>
+        <div class="input-wrap"><input type="text" placeholder="enter any url, example: www.google.com" name="url" /></div>
+        <div class="select-box">
+          <input class="disabled" type="radio" name="img" value="yes" id="img-yes" checked="checked" /><label for="img-yes">With Images</label>
+          <input class="disabled" type="radio" name="img" value="no" id="img-no"  /><label for="img-no">Without Images</label>
+        </div>
+    </form>
+  </section>
+
+  <section class="instructions">
+    <ul class="fa-ul">
+      <li class="i-1">
+        <i class="fa-li fa fa-keyboard-o fa-2x"></i>
+        Submit any website URL to generate a screenshot. Once the screenshot is generated subscribe
+        to daily visual changes by email or RSS.
+      </li>
+      <li class="i-2">
+        <i class="fa-li fa fa-envelope-o fa-2x"></i>
+        When a change is detected you will receive a single email (or an RSS update)
+        with a preview of the change.
+      </li>
+      <li class="i-3">
+        <i class="fa-li fa fa-binoculars fa-2x"></i>
+        The diff images will show you areas that have changed since the last screenshot
+        with visual highlights. Click on the image diffs to zoom in and examine the
+        side-by-side comparison.
+      </li>
+    </ul>
+    <div class="icon-header"><h2>See front page changes from a collection of popular sites below</h2></div>
+    <div class="i-4 icons">
+      <a href="#i/AWd"><i class="fa fa-apple fa-fw fa-4x"></i></a>
+      <a href="#i/8R7"><i class="fa fa-dropbox fa-fw fa-4x"></i></a>
+      <a href="#i/RgM"><i class="fa my-fa-facebook-square fa-fw fa-4x"></i></a>
+      <a href="#i/bxm"><i class="fa my-fa-flickr fa-fw fa-4x"></i></a>
+      <a href="#i/Py7"><i class="fa fa-foursquare fa-fw fa-4x"></i></a>
+      <a href="#i/jJd"><i class="fa fa-github-square fa-fw fa-4x"></i></a>
+      <a href="#i/Kx3"><i class="fa my-fa-google fa-fw fa-4x"></i></a>
+      <a href="#i/yqr"><i class="fa my-fa-instagram fa-fw fa-4x"></i></a>
+      <a href="#i/O8q"><i class="fa my-fa-linkedin-square fa-fw fa-4x"></i></a>
+      <a href="#i/eLK"><i class="fa my-fa-reddit fa-fw fa-4x"></i></a>
+      <a href="#i/X1"><i class="fa fa-stack-overflow fa-fw fa-4x"></i></a>
+      <a href="#i/DnX"><i class="fa fa-steam-square fa-fw fa-4x"></i></a>
+      <a href="#i/dLz"><i class="fa my-fa-tumblr-square fa-fw fa-4x"></i></a>
+      <a href="#i/xqM"><i class="fa my-fa-twitter-square fa-fw fa-4x"></i></a>
+      <a href="#i/2Dg"><i class="fa fa-hacker-news fa-fw fa-4x"></i></a>
+    </div>
+  </section>
+
+  <section class="error">
+    <div class="error-wrapper">
+      <div class="error-icon"><i class="fa fa-warning fa-5x"></i></div>
+      <div class="error-msg"></div> 
+    </div>
+  </section>
+
+  <section class="spinner">
+    <div class="spinner-wrapper">
+      <div class="spinner"><img src="imgs/screenshot-spinner.gif" alt="spinner" /></div>
+      <div class="spinner-msg"></div> 
+    </div>
+  </section>
+
+
+  <div class=s-s-wrapper">
+    <section class="screenshot">
+      <div class="screenshot">
+      </div>
+      <div class="overlay-text">Latest Screenshot<br />click to zoom</div>
+    </section>
+    <section class="subscribe">
+      <div class="subscribe">
+        <div class="rss">
+          <div class="rss-icon"><i class="fa fa-rss-square fa-5x rss-icon"></i></div>
+          <div class="aside success-fade">&#11013; Subscribe to an RSS feed <b>or</b> receive an email for every page difference below</div>
+        </div>
+        <div class="subscribe-form">
+          <form action="#" class="success-fade" id="email-subscribe">
+              <div class="button-wrap"><button name="subscribe">Subscribe!</button></div>
+              <div class="input-wrap"><input type="text" placeholder="email for change notifications" name="email" /></div>
+              <input type="hidden" name="hid" />
+          </form>
+          <div class="notification"></div>
+        </div>
+      </div>
+    </section>
+    <section class="url-status"><div class="url-status"></div></section>
+  </div>
+
+  <section class="stats">
+    <h2 class="header">Captures below, click to show stats</h2>
+    <div class="content">
+      <table>
+        <tr><td>Interval:</td><td>Every <span class="interval"></span></td></tr>
+        <tr><td>Checks started:</td><td><span class="created"></span></td></tr>
+        <tr><td>Last successful check:</td><td><span class="last_check"></span></td></tr>
+        <tr><td>Number of changes detected:</td><td><span class="changes"></span></td></tr>
+        <tr><td>Number of checks completed:</td><td><span class="checks"></span></td></tr>
+        <tr><td>Last change:</td><td><span class="last_change"></span></td></tr>
+        <tr><td>Latest screenshot:</td><td class="screenshot"></td></tr>
+      </table>
+      <i>More stats coming soon..</i>
+    </div>
+  </section>
+
+
+  <section class="diffs">
+    <div class="page-diffs">
+
+    </div>
+  </section>
+
+  <footer>
+    <span>contact: <a href="mailto:info@page-watch.com">info@page-watch.com</a></span>
+  </footer>
+  </div> <!-- content -->
+  <div class="fade"></div>
+  <div class="overlay"></div>
+  <script src="js/vendor/jquery-1.11.0.min.js"></script>
+  <script src="js/vendor/underscore-min.js"></script>
+  <script src="js/vendor/backbone-min.js"></script>
+  <script src="js/vendor/jquery.zoom.js"></script>
+  <script src="js/page-watch-new.js"></script>
+
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-58595149-1', 'auto');
+    ga('send', 'pageview');
+
+  </script>
+
+  </body>
+</html>

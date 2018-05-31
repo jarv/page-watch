@@ -1,0 +1,1 @@
+echo "from django.db import DEFAULT_DB_ALIAS as database; from django.contrib.auth.models import User; User.objects.db_manager(database).create_superuser('jarv', '', 'radiogaga')"  | ./manage.py shell
